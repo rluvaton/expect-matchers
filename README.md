@@ -4,6 +4,8 @@
 ## Why
 
 ### TL;DR
+Until and if [jest-community/jest-extended#640](https://github.com/jest-community/jest-extended/pull/640) is merged I need better toIncludeSameMembers
+
 Currently, if you have a test like this and is using jest-extended:
 ```js
 it('example', () => {
@@ -121,10 +123,28 @@ If your editor does not recognise the custom `expect-matchers` matchers, add a `
 import 'expect-matchers';
 ```
 
+### If you also use `jest-extended`
+If you also use `jest-matchers` you should not extend `expect` with the matcher `toIncludeSameMembers` as it can cause undefined behavior
+
 ## Matchers
 
-- [ ] TODO - add matcher docs
+#### .toIncludeSameMembers([members, fnOrKey?])
+
+```js
+test('passes when arrays match in a different order', () => {
+  expect([1, 2, 3]).toIncludeSameMembers([3, 1, 2]);
+  expect([{ foo: 'bar' }, { baz: 'qux' }]).toIncludeSameMembers([{ baz: 'qux' }, { foo: 'bar' }]);
+});
+```
+
+For best error output in case the matcher fail and in case the array items are objects you should pass a key or a function that will return a unique key to the matcher so we can display the .
+```js
+test('passes when arrays match in a different order', () => {
+  expect([{ id: 2, foo: 'bar' }, { id: 1, baz: 'qux' }]).toIncludeSameMembers([{ id: 1, baz: 'QUX' }, { id: 2, foo: 'bar' }], 'id');
+  expect([{ id: 2, foo: 'bar' }, { id: 1, baz: 'qux' }]).toIncludeSameMembers([{ id: 1, baz: 'QUX' }, { id: 2, foo: 'bar' }], (itemA, itemB) => itemA.id === itemB.id);
+});
+```
 
 ## Inspirations and credits
-2. `jest-extended` for the loading, setup some of the code and the file directory structure
+`jest-extended` for the loading, setup some of the code and the file directory structure
 
