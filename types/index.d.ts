@@ -31,7 +31,7 @@ declare namespace jest {
   interface InverseAsymmetricMatchers extends Expect {}
 }
 
-declare module 'jest-extended' {
+declare module 'expect-matchers' {
   const matchers: CustomMatchers<any>;
   export = matchers;
 }
