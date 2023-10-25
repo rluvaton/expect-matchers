@@ -12,13 +12,13 @@
   "scripts": {
     "build": "babel src -d dist --ignore \"**/*.test.js\"",
     "lint": "eslint .",
-    "lint:fix": "npm run lint --fix",
+    "lint:fix": "npm run lint -- --fix",
     "prepare": "husky install",
     "prepublishOnly": "yarn build",
     "precommit": "lint-staged",
     "test": "jest --color=true",
-    "test:coverage": "npm test --coverage",
-    "test:watch": "npm test --watch",
+    "test:coverage": "npm test -- --coverage",
+    "test:watch": "npm test -- --watch",
     "typecheck": "tsc --noEmit types/index.d.ts"
   },
   "keywords": [

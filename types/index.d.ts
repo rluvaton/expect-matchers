@@ -8,7 +8,6 @@ interface CustomMatchers<R> extends Record<string, any> {
    * @param fnOrKey
    */
   toIncludeSameMembers<E = unknown>(members: readonly E[], fnOrKey?: string | ((itemA: E, itemB: E) => boolean)): R;
-
 }
 
 declare namespace jest {
