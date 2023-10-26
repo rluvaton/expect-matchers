@@ -19,7 +19,10 @@ declare namespace jest {
      * @param {Array.<*>} members
      * @param fnOrKey
      */
-    toIncludeSameMembers<E = unknown>(members: readonly E[], fnOrKey?: string | ((itemA: E, itemB: E) => boolean)): R;
+    toIncludeSameMembers<E = unknown>(
+      members: readonly E[],
+      fnOrKey?: string | ((itemA: E, itemB: E, equals: (a: unknown, b: unknown) => boolean) => boolean),
+    ): R;
   }
 
   // noinspection JSUnusedGlobalSymbols

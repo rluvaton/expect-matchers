@@ -54,6 +54,86 @@ describe('.toIncludeSameMembers', () => {
     });
   });
 
+  describe('with asymmetric matchers inside the values', () => {
+    test('using object containing', () => {
+      expect(() =>
+        expect([
+          { id: 4, key: 'b', value: 'somethings' },
+          { id: 3, key: 'c', value: 'never' },
+          { id: 2, key: 'd', value: 'change' },
+          { id: 1, key: 'a', value: 'like' },
+        ]).toIncludeSameMembers(
+          [
+            { id: 1, key: 'a' },
+            { id: 2, key: 'b' },
+            { id: 3, key: 'c' },
+          ].map(item => expect.objectContaining(item)),
+          'id',
+        ),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test('using key when value is asymmetric matcher', () => {
+      expect(() =>
+        expect([
+          { id: 2, key: 'd' },
+          { id: 3, key: 'c' },
+          { id: 1, key: 'a' },
+          { id: 4, key: 'b' },
+        ]).toIncludeSameMembers(
+          [
+            { id: 1, key: 'a' },
+            { id: expect.any(Number), key: 'b' },
+            { id: 3, key: 'c' },
+          ],
+          'id',
+        ),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test('some items in actual and expected are undefined', () => {
+      expect(() =>
+        expect([
+          { id: 3, key: 'c', value: 'never' },
+          { id: 2, key: 'd', value: 'change' },
+          undefined,
+          { id: 1, key: 'a', value: 'like' },
+        ]).toIncludeSameMembers(
+          [{ id: 1, key: 'a' }, { id: 2, key: 'b' }, { id: 3, key: 'c' }, undefined].map(
+            item => item && expect.objectContaining(item),
+          ),
+          'id',
+        ),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test('passed function should get the underlying object behind the asymmetric matcher', function () {
+      const fn = jest.fn(() => true);
+      try {
+        expect([
+          { id: 2, key: 'c', value: 'change' },
+          { id: 1, key: 'a', value: 'like' },
+        ]).toIncludeSameMembers(
+          [
+            { id: 1, key: 'a' },
+            { id: 2, key: 'b' },
+          ].map(item => expect.objectContaining(item)),
+          fn,
+        );
+      } catch (err) {
+        // If not error due to matcher result, rethrow
+        if (!err || !err.matcherResult) {
+          throw err;
+        }
+
+        // ignore
+      }
+
+      expect(fn).toHaveBeenCalledTimes(1);
+      expect(fn).toBeCalledWith({ id: 2, key: 'b' }, { id: 2, key: 'c', value: 'change' }, expect.any(Function));
+    });
+  });
+
   describe('fails when actual has less items than expected (when the ones exists match)', () => {
     test('simple items', () => {
       expect(() => expect([2, 3, 1]).toIncludeSameMembers([1, 2, 3, 4])).toThrowErrorMatchingSnapshot();

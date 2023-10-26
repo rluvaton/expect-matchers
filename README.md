@@ -111,7 +111,7 @@ To automatically extend `expect` with all matchers, you can use
 
 ```json
 "jest": {
-  "setupFilesAfterEnv": ["sinon-jest-matchers/all"]
+  "setupFilesAfterEnv": ["expect-matchers/all"]
 }
 ```
 
@@ -124,7 +124,7 @@ import 'expect-matchers';
 ```
 
 ### If you also use `jest-extended`
-If you also use `jest-matchers` you should not extend `expect` with the matcher `toIncludeSameMembers` as it can cause undefined behavior
+If you also use `jest-extended` you should not extend `expect` with the matcher `toIncludeSameMembers` as it can cause undefined behavior
 
 ## Matchers
 
@@ -137,7 +137,9 @@ test('passes when arrays match in a different order', () => {
 });
 ```
 
-For best error output in case the matcher fail and in case the array items are objects you should pass a key or a function that will return a unique key to the matcher so we can display the .
+##### If you are working with objects
+For best error output you should pass a key or a function that will return a unique key to the matcher so we can display the error better
+
 ```js
 test('passes when arrays match in a different order', () => {
   expect([{ id: 2, foo: 'bar' }, { id: 1, baz: 'qux' }]).toIncludeSameMembers([{ id: 1, baz: 'QUX' }, { id: 2, foo: 'bar' }], 'id');

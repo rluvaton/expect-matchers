@@ -227,3 +227,77 @@ exports[`.toIncludeSameMembers keyOrFn passed property of the items as key 1`] =
 <dim>    },</intensity>
 <dim>  ]</intensity>"
 `;
+
+exports[`.toIncludeSameMembers with asymmetric matchers inside the values some items in actual and expected are undefined 1`] = `
+"<dim>expect(</intensity><red>received</color><dim>).toIncludeSameMembers(</intensity><green>expected</color><dim>)</intensity>
+
+<green>- Expected  - 2</color>
+<red>+ Received  + 3</color>
+
+<yellow>@@ -1,13 +1,14 @@</color>
+<dim>  Array [</intensity>
+<dim>    ObjectContaining {</intensity>
+<dim>      "id": 1,</intensity>
+<dim>      "key": "a",</intensity>
+<dim>    },</intensity>
+<green>-   ObjectContaining {</color>
+<red>+   Object {</color>
+<dim>      "id": 2,</intensity>
+<green>-     "key": "b",</color>
+<red>+     "key": "d",</color>
+<red>+     "value": "change",</color>
+<dim>    },</intensity>
+<dim>    ObjectContaining {</intensity>
+<dim>      "id": 3,</intensity>
+<dim>      "key": "c",</intensity>
+<dim>    },</intensity>"
+`;
+
+exports[`.toIncludeSameMembers with asymmetric matchers inside the values using key when value is asymmetric matcher 1`] = `
+"<dim>expect(</intensity><red>received</color><dim>).toIncludeSameMembers(</intensity><green>expected</color><dim>)</intensity>
+
+<green>- Expected  - 0</color>
+<red>+ Received  + 4</color>
+
+<yellow>@@ -9,6 +9,10 @@</color>
+<dim>    },</intensity>
+<dim>    Object {</intensity>
+<dim>      "id": 3,</intensity>
+<dim>      "key": "c",</intensity>
+<dim>    },</intensity>
+<red>+   Object {</color>
+<red>+     "id": 2,</color>
+<red>+     "key": "d",</color>
+<red>+   },</color>
+<dim>  ]</intensity>"
+`;
+
+exports[`.toIncludeSameMembers with asymmetric matchers inside the values using object containing 1`] = `
+"<dim>expect(</intensity><red>received</color><dim>).toIncludeSameMembers(</intensity><green>expected</color><dim>)</intensity>
+
+<green>- Expected  - 2</color>
+<red>+ Received  + 8</color>
+
+<dim>  Array [</intensity>
+<dim>    ObjectContaining {</intensity>
+<dim>      "id": 1,</intensity>
+<dim>      "key": "a",</intensity>
+<dim>    },</intensity>
+<green>-   ObjectContaining {</color>
+<red>+   Object {</color>
+<dim>      "id": 2,</intensity>
+<green>-     "key": "b",</color>
+<red>+     "key": "d",</color>
+<red>+     "value": "change",</color>
+<dim>    },</intensity>
+<dim>    ObjectContaining {</intensity>
+<dim>      "id": 3,</intensity>
+<dim>      "key": "c",</intensity>
+<red>+   },</color>
+<red>+   Object {</color>
+<red>+     "id": 4,</color>
+<red>+     "key": "b",</color>
+<red>+     "value": "somethings",</color>
+<dim>    },</intensity>
+<dim>  ]</intensity>"
+`;

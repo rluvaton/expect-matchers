@@ -1,5 +1,16 @@
 const kEmpty = Symbol('kEmpty');
 
+let asymmetricMatcherTypeof = undefined;
+try {
+  const { expect } = require('expect');
+  asymmetricMatcherTypeof = expect.objectContaining({}).$$typeof;
+} catch {
+  // Ignore
+  // Asymmetric matchers are not supported
+}
+const isAsymmetricMatcher = expected =>
+  asymmetricMatcherTypeof && expected && expected.$$typeof === asymmetricMatcherTypeof;
+
 export function toIncludeSameMembers(actual, expected, keyOrFn) {
   const { printReceived, printExpected, matcherHint, printDiffOrStringify } = this.utils;
 
@@ -87,12 +98,17 @@ function getBetterDiff(equals, actual, expected, fnOrKey) {
     };
   }
 
-  const key = fnOrKey;
-  fnOrKey = typeof fnOrKey === 'string' ? (itemA, itemB) => itemA?.[key] === itemB?.[key] : fnOrKey;
+  const key = typeof fnOrKey !== 'function' && typeof fnOrKey !== 'object' && fnOrKey != null ? fnOrKey : undefined;
+  const fn = typeof fnOrKey === 'function' ? fnOrKey : undefined;
 
   // Fill the gaps with matching items
-  if (added.length && fnOrKey) {
-    fillWithMatchingItems({ added, missing, newActual, fn: fnOrKey });
+  if (added.length && (key !== undefined || fn)) {
+    fillWithMatchingItems({
+      added,
+      missing,
+      newActual,
+      fn: getIsItemSameFn(equals, fn, key),
+    });
   }
 
   let checkIfArrayHaveGaps = true;
@@ -130,6 +146,58 @@ function getBetterDiff(equals, actual, expected, fnOrKey) {
     newActual,
     useDiffOutput,
   };
+}
+
+function getIsItemSameFn(equals, fn, key) {
+  // If not supported
+  if (!asymmetricMatcherTypeof) {
+    return getNaiveIsItemsSameFn(fn, key);
+  }
+
+  if (key !== undefined) {
+    return getIsItemSameFnForKey(equals, key);
+  }
+
+  return getIsItemSameFnForFn(equals, fn);
+}
+
+function getNaiveIsItemsSameFn(fn, key) {
+  return typeof key === 'string' ? (itemA, itemB) => itemA?.[key] === itemB?.[key] : fn;
+}
+
+function getIsItemSameFnForKey(equals, key) {
+  return (actual, expected) => {
+    // Simple case
+    if (!isAsymmetricMatcher(actual) && !isAsymmetricMatcher(expected)) {
+      // using equals so if actual[key] is a number and expected[key] is expect.any(Number) it should evaluate to true
+      return equals(actual[key], expected[key]);
+    }
+
+    // If expected is asymmetric matcher we should try to evaluate it in case object and expect.any(Object)
+    if (equals(actual, expected)) {
+      return true;
+    }
+
+    const underlyingExpectedObject = getUnderlyingObjectForAsymmetricMatcher(expected);
+    const underlyingActualObject = getUnderlyingObjectForAsymmetricMatcher(actual);
+
+    return equals(underlyingActualObject[key], underlyingExpectedObject[key]);
+  };
+}
+
+function getIsItemSameFnForFn(equals, fn) {
+  return (actual, expected) => {
+    return fn(
+      getUnderlyingObjectForAsymmetricMatcher(actual),
+      getUnderlyingObjectForAsymmetricMatcher(expected),
+      equals,
+    );
+  };
+}
+
+function getUnderlyingObjectForAsymmetricMatcher(item) {
+  // https://github.com/jestjs/jest/blob/a91edab07db1a5f656c478517211769659b28011/packages/expect/src/asymmetricMatchers.ts#L77
+  return isAsymmetricMatcher(item) ? item.sample : item;
 }
 
 function getChanged(equals, actual, expected) {
