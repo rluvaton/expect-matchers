@@ -203,6 +203,24 @@ describe('.toIncludeSameMembers', () => {
       ).toThrowErrorMatchingSnapshot();
     });
 
+    test('show output error correctly when having null/undefined value in the actual value and using key', () => {
+      expect(() =>
+        expect([null]).toIncludeSameMembers([{ id: 3, name: 'Steve' }], 'id'),
+      ).toThrowErrorMatchingSnapshot();
+      expect(() =>
+        expect([undefined]).toIncludeSameMembers([{ id: 3, name: 'Steve' }], 'id'),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test('show output error correctly when having null/undefined value in the expected value and using key', () => {
+      expect(() =>
+        expect([{ id: 3, name: 'Steve' }]).toIncludeSameMembers([null], 'id'),
+      ).toThrowErrorMatchingSnapshot();
+      expect(() =>
+        expect([{ id: 3, name: 'Steve' }]).toIncludeSameMembers([undefined], 'id'),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
     test('passed function', () => {
       expect(() =>
         expect([

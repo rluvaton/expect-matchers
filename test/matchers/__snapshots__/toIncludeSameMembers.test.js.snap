@@ -228,6 +228,66 @@ exports[`.toIncludeSameMembers keyOrFn passed property of the items as key 1`] =
 <dim>  ]</intensity>"
 `;
 
+exports[`.toIncludeSameMembers keyOrFn show output error correctly when having null/undefined value in the actual value and using key 1`] = `
+"<dim>expect(</intensity><red>received</color><dim>).toIncludeSameMembers(</intensity><green>expected</color><dim>)</intensity>
+
+<green>- Expected  - 4</color>
+<red>+ Received  + 1</color>
+
+<dim>  Array [</intensity>
+<green>-   Object {</color>
+<green>-     "id": 3,</color>
+<green>-     "name": "Steve",</color>
+<green>-   },</color>
+<red>+   null,</color>
+<dim>  ]</intensity>"
+`;
+
+exports[`.toIncludeSameMembers keyOrFn show output error correctly when having null/undefined value in the actual value and using key 2`] = `
+"<dim>expect(</intensity><red>received</color><dim>).toIncludeSameMembers(</intensity><green>expected</color><dim>)</intensity>
+
+<green>- Expected  - 4</color>
+<red>+ Received  + 1</color>
+
+<dim>  Array [</intensity>
+<green>-   Object {</color>
+<green>-     "id": 3,</color>
+<green>-     "name": "Steve",</color>
+<green>-   },</color>
+<red>+   undefined,</color>
+<dim>  ]</intensity>"
+`;
+
+exports[`.toIncludeSameMembers keyOrFn show output error correctly when having null/undefined value in the expected value and using key 1`] = `
+"<dim>expect(</intensity><red>received</color><dim>).toIncludeSameMembers(</intensity><green>expected</color><dim>)</intensity>
+
+<green>- Expected  - 1</color>
+<red>+ Received  + 4</color>
+
+<dim>  Array [</intensity>
+<green>-   null,</color>
+<red>+   Object {</color>
+<red>+     "id": 3,</color>
+<red>+     "name": "Steve",</color>
+<red>+   },</color>
+<dim>  ]</intensity>"
+`;
+
+exports[`.toIncludeSameMembers keyOrFn show output error correctly when having null/undefined value in the expected value and using key 2`] = `
+"<dim>expect(</intensity><red>received</color><dim>).toIncludeSameMembers(</intensity><green>expected</color><dim>)</intensity>
+
+<green>- Expected  - 1</color>
+<red>+ Received  + 4</color>
+
+<dim>  Array [</intensity>
+<green>-   undefined,</color>
+<red>+   Object {</color>
+<red>+     "id": 3,</color>
+<red>+     "name": "Steve",</color>
+<red>+   },</color>
+<dim>  ]</intensity>"
+`;
+
 exports[`.toIncludeSameMembers with asymmetric matchers inside the values some items in actual and expected are undefined 1`] = `
 "<dim>expect(</intensity><red>received</color><dim>).toIncludeSameMembers(</intensity><green>expected</color><dim>)</intensity>
 
