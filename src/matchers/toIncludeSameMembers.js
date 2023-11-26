@@ -170,7 +170,7 @@ function getIsItemSameFnForKey(equals, key) {
     // Simple case
     if (!isAsymmetricMatcher(actual) && !isAsymmetricMatcher(expected)) {
       // using equals so if actual[key] is a number and expected[key] is expect.any(Number) it should evaluate to true
-      return equals(actual[key], expected[key]);
+      return equals(actual?.[key], expected?.[key]);
     }
 
     // If expected is asymmetric matcher we should try to evaluate it in case object and expect.any(Object)
