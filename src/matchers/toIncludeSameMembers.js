@@ -61,9 +61,27 @@ export function toIncludeSameMembers(actual, expected, keyOrFn) {
   };
 }
 
+function isArraySuitableForPrimitiveFastPath(array) {
+  return array.every(
+    item =>
+      typeof item !== 'function' &&
+      (typeof item !== 'object' || item === null) &&
+      // Can't sort array of symbols
+      typeof item !== 'symbol',
+  );
+}
+
 const predicate = (equals, actual, expected) => {
   if (!Array.isArray(actual) || !Array.isArray(expected) || actual.length !== expected.length) {
     return false;
+  }
+
+  const isActualAndExpectedPrimitiveArrays =
+    // testing expected first as it is the most likely to include asymmetric matchers
+    isArraySuitableForPrimitiveFastPath(expected) && isArraySuitableForPrimitiveFastPath(actual);
+
+  if (isActualAndExpectedPrimitiveArrays) {
+    return fasterPredicateForPrimitiveArray(actual, expected);
   }
 
   const remaining = expected.reduce((remaining, secondValue) => {
@@ -80,6 +98,27 @@ const predicate = (equals, actual, expected) => {
 
   return !!remaining && remaining.length === 0;
 };
+
+/**
+ * Faster predicate for primitive arrays
+ * @param {(string | null | undefined | number | boolean | symbol | bigint)[]} actual
+ * @param {(string | null | undefined | number | boolean | symbol | bigint)[]} expected
+ */
+function fasterPredicateForPrimitiveArray(actual, expected) {
+  // Sort is mutating, so we want to avoid mutating the array
+  const actualSorted = actual.slice(0).sort();
+  const expectedSorted = expected.slice(0).sort();
+
+  const length = actualSorted.length;
+
+  for (let i = 0; i < length; i++) {
+    if (actualSorted[i] !== expectedSorted[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
 
 function getBetterDiff(equals, actual, expected, fnOrKey) {
   let { invalid, added, missing, partialNewActual: newActual } = getChanged(equals, actual, expected);

@@ -239,6 +239,27 @@ describe('.toIncludeSameMembers', () => {
       ).toThrowErrorMatchingSnapshot();
     });
   });
+
+  test('should not mutate actual and expected arrays when the both array is primitive', () => {
+    const actual = [2, 1, 3];
+    const expected = [2, 1, 3];
+
+    try {
+      expect(actual).toIncludeSameMembers(expected);
+    } catch {
+      // Ignore as this is not testing correctness
+    }
+
+    expect(actual).toEqual([2, 1, 3]);
+    expect(expected).toEqual([2, 1, 3]);
+  });
+
+  test('should support array of symbols', () => {
+    const s1 = Symbol('s1');
+    const s2 = Symbol('s2');
+
+    expect([s2, s1]).toIncludeSameMembers([s1, s2]);
+  });
 });
 
 describe('.not.toIncludeSameMembers', () => {
