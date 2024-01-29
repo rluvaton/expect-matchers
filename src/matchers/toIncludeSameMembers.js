@@ -66,7 +66,7 @@ function isArraySuitableForPrimitiveFastPath(array) {
     item =>
       typeof item !== 'function' &&
       (typeof item !== 'object' || item === null) &&
-      // Can't sort of array of symbols
+      // Can't sort array of symbols
       typeof item !== 'symbol',
   );
 }
